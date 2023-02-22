@@ -1,12 +1,24 @@
 <script setup lang="ts">
 import HelloWorld from '@/components/HelloWorld.vue'
-import { ref } from 'vue'
+import { reactive, ref, watch  } from 'vue'
+import { useUserStore } from '@/modules/user/store'
+import { storeToRefs } from 'pinia'
 
-const leftDrawerOpen = ref(true)
+const userStore = useUserStore()
+
+const { profile } = storeToRefs(userStore)
+
+const leftDrawerOpen = ref(false)
 
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
+
+watch(profile, (profile) => {
+  if (profile) {
+    leftDrawerOpen.value = true
+  }
+})
 </script>
 
 <template>
@@ -17,7 +29,7 @@ const toggleLeftDrawer = () => {
   <q-layout view="hHh lpR fFf">
     <q-header class="bg-primary text-white">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
+        <q-btn v-if="profile" dense flat round icon="menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
           <q-avatar>
