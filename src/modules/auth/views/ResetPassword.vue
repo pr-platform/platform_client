@@ -87,6 +87,7 @@ const resetPassword = async () => {
               lazy-rules
               outlined
               dense
+              type="password"
               :rules="[requiredRule, minLengthRule(6)]"
             />
             <q-btn unelevated type="submit" color="primary">Reset</q-btn>
