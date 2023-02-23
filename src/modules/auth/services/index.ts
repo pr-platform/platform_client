@@ -4,7 +4,11 @@ import {
   RegistrationArgs,
   RegistrationResponse,
   VerifiedArgs,
-  VerifiedResponse
+  VerifiedResponse,
+  RequestOnResetPasswordArgs,
+  RequestOnResetPasswordResponse,
+  ResetPasswordArgs,
+  ResetPasswordResponse,
 } from '../types';
 import Service from '@/services/Service'
 import { AxiosInstance } from 'axios';
@@ -57,6 +61,38 @@ class AuthService extends Service {
 
     if (data.message !== 'ok') {
       throw new Error('Verified failed')
+    }
+
+    return data
+  }
+
+  public async requestOnResetPassword(requestOnResetPasswordArgs: RequestOnResetPasswordArgs): Promise<RequestOnResetPasswordResponse> {
+    if (!requestOnResetPasswordArgs.email) {
+      throw new Error('Email is required')
+    }
+
+    const { data } = await this.axios.post<RequestOnResetPasswordResponse>('/auth/request-on-reset-password', requestOnResetPasswordArgs)
+
+    if (data.message !== 'ok') {
+      throw new Error('Request on reset password failed')
+    }
+
+    return data
+  }
+
+  public async resetPassword(resetPasswordArgs: ResetPasswordArgs): Promise<ResetPasswordResponse> {
+    if (!resetPasswordArgs.password) {
+      throw new Error('Password is required')
+    }
+
+    if (!resetPasswordArgs.reset_token) {
+      throw new Error('Token is required')
+    }
+
+    const { data } = await this.axios.post<ResetPasswordResponse>('/auth/reset-password', resetPasswordArgs)
+
+    if (data.message !== 'ok') {
+      throw new Error('Reset password failed')
     }
 
     return data

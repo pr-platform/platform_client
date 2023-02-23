@@ -36,9 +36,9 @@ const onSubmit = async () => {
 <template>
   <q-card bordered flat>
     <q-card-section>
-      <h1 class="text-h4 q-mt-none q-mb-xl">Registration</h1>
+      <h1 class="text-h4 q-mt-none q-mb-xl">Sign up</h1>
       <q-form
-        class="q-gutter-md"
+        class="q-gutter-sm"
         @submit="onSubmit"
       >
         <q-input
@@ -59,10 +59,9 @@ const onSubmit = async () => {
           :rules="[requiredRule, minLengthRule(6)]"
         />
         <div class="flex items-center justify-between">
-          <q-btn unelevated type="submit" color="primary">Registration</q-btn>
+          <q-btn unelevated type="submit" color="primary">Sign up</q-btn>
           <a
-            class="text-primary"
-            style="cursor: pointer;"
+            class="text-primary cursor-pointer"
             @click.prevent="router.push({ name: 'SignIn' })"
           >
             Sign in

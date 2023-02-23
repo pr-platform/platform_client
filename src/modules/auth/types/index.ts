@@ -23,3 +23,20 @@ export type VerifiedArgs = {
 export type VerifiedResponse = {
   message: string,
 }
+
+export type RequestOnResetPasswordArgs = {
+  email: string,
+}
+
+export type RequestOnResetPasswordResponse = {
+  message: string,
+}
+
+export type ResetPasswordArgs = {
+  reset_token: string,
+  password: string,
+}
+
+export type ResetPasswordResponse = {
+  message: string,
+}
