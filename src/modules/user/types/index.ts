@@ -6,6 +6,6 @@ export type GetProfileResponse = {
   verified: boolean,
   blocked: boolean,
   roleId: number,
-  createdAt: string,
-  updatedAt: string,
+  createdAt?: string,
+  updatedAt?: string,
 }

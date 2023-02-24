@@ -3,8 +3,10 @@ import HelloWorld from '@/components/HelloWorld.vue'
 import { reactive, ref, watch  } from 'vue'
 import { useUserStore } from '@/modules/user/store'
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()
+const router = useRouter()
 
 const { profile } = storeToRefs(userStore)
 
@@ -14,29 +16,56 @@ const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
 
+const logout = () => {
+  localStorage.removeItem('access_token')
+  router.push({ name: 'Home' })
+  userStore.profile = null
+}
+
 watch(profile, (profile) => {
   if (profile) {
     leftDrawerOpen.value = true
+  } else {
+    leftDrawerOpen.value = false
   }
 })
 </script>
 
 <template>
-  <!-- <q-btn color="white" text-color="black" label="Standard" />
-  <HelloWorld msg="Platform" />
-  <router-link :to="{ name: 'Info' }">Info</router-link> -->
-
   <q-layout view="hHh lpR fFf">
     <q-header class="bg-primary text-white">
       <q-toolbar>
         <q-btn v-if="profile" dense flat round icon="menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
-          </q-avatar>
           Platform
         </q-toolbar-title>
+
+        <q-btn
+          v-if="!profile"
+          flat
+          @click="router.push({ name: 'SignIn' })"
+        >
+          Sign in
+        </q-btn>
+
+        <div v-else class="flex">
+          <q-btn
+            flat
+            @click="router.push({ name: 'Profile' })"
+          >
+            Profile
+          </q-btn>
+
+          <q-separator dark vertical />
+
+          <q-btn
+            flat
+            icon="logout"
+            @click="logout"
+          />
+        </div>
+
       </q-toolbar>
     </q-header>
 
@@ -45,7 +74,9 @@ watch(profile, (profile) => {
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <div class="q-pa-md">
+        <router-view />
+      </div>
     </q-page-container>
 
     <q-footer class="text-white">
