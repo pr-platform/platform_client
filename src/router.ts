@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory, useRouter } from 'vue-router'
 import Home from './views/Home.vue'
 import Info from './views/Info.vue'
-import { routes as authRoutes } from './modules/auth'
-import { routes as userRoutes } from './modules/user'
+import authRoutes from './modules/auth/routes'
+import userRoutes from './modules/user/routes'
+import mailRoutes from './modules/mail/routes'
 
 import { useUserStore } from '@/modules/user/store'
 import userService from '@/modules/user/services'
@@ -20,6 +21,7 @@ const routes = [
   },
   ...authRoutes,
   ...userRoutes,
+  ...mailRoutes,
 ]
 
 const router = createRouter({

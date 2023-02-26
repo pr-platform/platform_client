@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import HelloWorld from '@/components/HelloWorld.vue'
-import { reactive, ref, watch  } from 'vue'
+import { ref, watch  } from 'vue'
 import { useUserStore } from '@/modules/user/store'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
@@ -71,6 +70,11 @@ watch(profile, (profile) => {
 
     <q-drawer v-model="leftDrawerOpen" side="left" bordered>
       <!-- drawer content -->
+      <q-list bordered separator>
+        <q-item clickable v-ripple :to="{ name: 'SendMail' }">
+          <q-item-section>Mail</q-item-section>
+        </q-item>
+      </q-list>
     </q-drawer>
 
     <q-page-container>
