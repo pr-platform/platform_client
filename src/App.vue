@@ -1,15 +1,22 @@
 <script setup lang="ts">
-import { ref, watch  } from 'vue'
+import { ref, watch, onMounted  } from 'vue'
 import { useUserStore } from '@/modules/user/store'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
+import langService from '@/modules/lang/services'
+import { useLangStore } from '@/modules/lang/store'
 
 const userStore = useUserStore()
+const langStore = useLangStore()
 const router = useRouter()
 
 const { profile } = storeToRefs(userStore)
 
 const leftDrawerOpen = ref(false)
+
+const langs = ref([])
+
+const { dictionary } = storeToRefs(langStore)
 
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
@@ -21,12 +28,39 @@ const logout = () => {
   userStore.profile = null
 }
 
+const currentLang = ref('en')
+
+const setLang = async (lang) => {
+  localStorage.setItem('lang', lang)
+  currentLang.value = lang
+
+  langStore.dictionary = await getDictonary();
+}
+
 watch(profile, (profile) => {
   if (profile) {
     leftDrawerOpen.value = true
   } else {
     leftDrawerOpen.value = false
   }
+})
+
+const getDictonary = async () => {
+  try {
+    return await langService.getDictionary({
+      where: {
+        alias: currentLang.value,
+      },
+      include_dictionary: true,
+    });
+  } catch (error) {
+    console.error(error.message)
+  }
+}
+
+onMounted(async () => {
+  langs.value = await langService.getLangs()
+  await setLang(localStorage.getItem('lang') || 'en')
 })
 </script>
 
@@ -37,8 +71,24 @@ watch(profile, (profile) => {
         <q-btn v-if="profile" dense flat round icon="menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          Platform
+          {{  dictionary.Platform_name }}
         </q-toolbar-title>
+
+        <q-btn-dropdown stretch flat :label="currentLang">
+          <q-list>
+            <q-item
+              v-for="lang in langs"
+              :key="lang.alias"
+              clickable
+              v-close-popup
+              @click="setLang(lang.alias)"
+            >
+              <q-item-section>
+                <q-item-label caption>{{ lang.alias }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
 
         <q-btn
           v-if="!profile"
@@ -74,6 +124,10 @@ watch(profile, (profile) => {
         <q-item clickable v-ripple :to="{ name: 'SendMail' }">
           <q-item-section>Mail</q-item-section>
         </q-item>
+
+        <q-item clickable v-ripple :to="{ name: 'Langs' }">
+          <q-item-section>Langs</q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -86,7 +140,7 @@ watch(profile, (profile) => {
     <q-footer class="text-white">
       <q-toolbar>
         <q-toolbar-title>
-          <div>Platform</div>
+          <div>{{  dictionary.Platform_name }}</div>
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>

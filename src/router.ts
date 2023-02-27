@@ -4,6 +4,7 @@ import Info from './views/Info.vue'
 import authRoutes from './modules/auth/routes'
 import userRoutes from './modules/user/routes'
 import mailRoutes from './modules/mail/routes'
+import langRoutes from './modules/lang/routes'
 
 import { useUserStore } from '@/modules/user/store'
 import userService from '@/modules/user/services'
@@ -22,6 +23,7 @@ const routes = [
   ...authRoutes,
   ...userRoutes,
   ...mailRoutes,
+  ...langRoutes,
 ]
 
 const router = createRouter({
