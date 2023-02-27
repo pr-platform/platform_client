@@ -71,7 +71,7 @@ onMounted(async () => {
         <q-btn v-if="profile" dense flat round icon="menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          {{  dictionary.Platform_name }}
+          {{ dictionary.Platform_name }}
         </q-toolbar-title>
 
         <q-btn-dropdown stretch flat :label="currentLang">
@@ -140,7 +140,7 @@ onMounted(async () => {
     <q-footer class="text-white">
       <q-toolbar>
         <q-toolbar-title>
-          <div>{{  dictionary.Platform_name }}</div>
+          <div>{{ dictionary.Platform_name }}</div>
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
