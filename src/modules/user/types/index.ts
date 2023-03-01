@@ -1,8 +1,8 @@
 export type GetProfileResponse = {
   id: number,
   email: string,
-  firstName?: string | null,
-  lastName?: string | null,
+  firstname?: string | null,
+  lastname?: string | null,
   verified: boolean,
   blocked: boolean,
   roleId: number,

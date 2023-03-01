@@ -7,9 +7,14 @@ import notify from '@/plugins/notify'
 import userService from '@/modules/user/services'
 import { useUserStore } from '../../user/store'
 import { useRouter } from 'vue-router'
+import { useLangStore } from '@/modules/lang/store'
+import { storeToRefs } from 'pinia'
 
 const userStore = useUserStore()
+const langStore = useLangStore()
 const router = useRouter()
+
+const { dictionary } = storeToRefs(langStore)
 
 const $q = useQuasar()
 
@@ -43,14 +48,14 @@ const onSubmit = async () => {
 <template>
   <q-card bordered flat>
     <q-card-section>
-      <h1 class="text-h4 q-mt-none q-mb-xl">Sign in</h1>
+      <h1 class="text-h4 q-mt-none q-mb-xl">{{ dictionary.Sign_in }}</h1>
       <q-form
         class="q-gutter-sm"
         @submit="onSubmit"
       >
         <q-input
           v-model="authData.email"
-          label="E-mail"
+          :label="dictionary.Email"
           lazy-rules
           outlined
           dense
@@ -58,7 +63,7 @@ const onSubmit = async () => {
         />
         <q-input
           v-model="authData.password"
-          label="Password"
+          :label="dictionary.Password"
           lazy-rules
           outlined
           dense
@@ -66,12 +71,12 @@ const onSubmit = async () => {
           :rules="[requiredRule, minLengthRule(6)]"
         />
         <div class="flex items-center justify-between q-mb-sm">
-          <q-btn unelevated type="submit" color="primary">Sign in</q-btn>
+          <q-btn unelevated type="submit" color="primary">{{ dictionary.Sign_in }}</q-btn>
           <a
             class="text-primary cursor-pointer"
             @click.prevent="router.push({ name: 'SignUp' })"
           >
-            Sign up
+            {{ dictionary.Sign_up }}
           </a>
         </div>
 
@@ -79,7 +84,7 @@ const onSubmit = async () => {
           class="text-primary cursor-pointer"
           @click.prevent="router.push({ name: 'ResetPassword' })"
         >
-          Forgot your password?
+          {{ dictionary.Forgot_your_password }}
         </a>
       </q-form>
     </q-card-section>

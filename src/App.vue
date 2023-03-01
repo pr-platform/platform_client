@@ -95,7 +95,7 @@ onMounted(async () => {
           flat
           @click="router.push({ name: 'SignIn' })"
         >
-          Sign in
+          {{ dictionary.Sign_in }}
         </q-btn>
 
         <div v-else class="flex">
@@ -103,7 +103,7 @@ onMounted(async () => {
             flat
             @click="router.push({ name: 'Profile' })"
           >
-            Profile
+            {{ dictionary.Profile }}
           </q-btn>
 
           <q-separator dark vertical />
@@ -122,11 +122,11 @@ onMounted(async () => {
       <!-- drawer content -->
       <q-list bordered separator>
         <q-item clickable v-ripple :to="{ name: 'SendMail' }">
-          <q-item-section>Mail</q-item-section>
+          <q-item-section>{{ dictionary.Mail }}</q-item-section>
         </q-item>
 
         <q-item clickable v-ripple :to="{ name: 'Langs' }">
-          <q-item-section>Langs</q-item-section>
+          <q-item-section>{{ dictionary.Langs }}</q-item-section>
         </q-item>
       </q-list>
     </q-drawer>

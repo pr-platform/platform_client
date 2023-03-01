@@ -5,8 +5,12 @@ import { SendEmailArgs } from '../types'
 import mailService from '../services'
 import notify from '@/plugins/notify'
 import { useQuasar } from 'quasar'
+import { useLangStore } from '@/modules/lang/store'
+import { storeToRefs } from 'pinia'
 
 const $q = useQuasar()
+const langStore = useLangStore()
+const { dictionary } = storeToRefs(langStore)
 const notification = notify($q)
 
 const sendEmailArgs = reactive<SendEmailArgs>({
@@ -35,10 +39,10 @@ const send = async () => {
       <q-card bordered flat>
         <q-card-section>
           <q-form class="q-gutter-lg" @submit="send">
-            <h3 class="text-h6">Send mail</h3>
+            <h3 class="text-h6">{{ dictionary.Send_email }}</h3>
             <q-input
               v-model="sendEmailArgs.to"
-              label="E-mail"
+              :label="dictionary.Email"
               lazy-rules
               outlined
               dense
@@ -47,13 +51,13 @@ const send = async () => {
             />
             <q-input
               v-model="sendEmailArgs.subject"
-              label="Subject"
+              :label="dictionary.Subject"
               outlined
               dense
             />
             <q-input
               v-model="sendEmailArgs.text"
-              label="Text"
+              :label="dictionary.Text"
               outlined
               dense
               type="textarea"
@@ -63,7 +67,7 @@ const send = async () => {
               min-height="8rem"
             />
 
-            <q-btn unelevated type="submit" color="primary">Send</q-btn>
+            <q-btn unelevated type="submit" color="primary">{{ dictionary.Send }}</q-btn>
           </q-form>
         </q-card-section>
       </q-card>

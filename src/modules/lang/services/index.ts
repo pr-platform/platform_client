@@ -15,13 +15,13 @@ class LangService extends Service {
   }
 
   public async getLangs(): Promise<GetLangsResponse> {
-    const { data } = await this.axios.get<GetLangsResponse>('/lang')
+    const { data } = await this.axios.get<GetLangsResponse>('/langs')
 
     return data
   }
 
   public async getOneLang(getOneLangArgs: GetOneLangArgs): Promise<GetOneLangResponse> {
-    const { data } = await this.axios.get<GetOneLangResponse>('/lang/find-one', {
+    const { data } = await this.axios.get<GetOneLangResponse>('/langs/find-one', {
       params: getOneLangArgs,
     })
 

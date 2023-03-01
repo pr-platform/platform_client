@@ -5,8 +5,13 @@ import { requiredRule, emailRule, minLengthRule } from '@/rules'
 import authService from '../services'
 import notify from '@/plugins/notify'
 import { useRouter } from 'vue-router'
+import { useLangStore } from '@/modules/lang/store'
+import { storeToRefs } from 'pinia'
 
 const router = useRouter()
+
+const langStore = useLangStore()
+const { dictionary } = storeToRefs(langStore)
 
 const $q = useQuasar()
 
@@ -36,14 +41,14 @@ const onSubmit = async () => {
 <template>
   <q-card bordered flat>
     <q-card-section>
-      <h1 class="text-h4 q-mt-none q-mb-xl">Sign up</h1>
+      <h1 class="text-h4 q-mt-none q-mb-xl">{{ dictionary.Sign_up }}</h1>
       <q-form
         class="q-gutter-sm"
         @submit="onSubmit"
       >
         <q-input
           v-model="registrationArgs.email"
-          label="E-mail"
+          :label="dictionary.Email"
           lazy-rules
           outlined
           dense
@@ -51,7 +56,7 @@ const onSubmit = async () => {
         />
         <q-input
           v-model="registrationArgs.password"
-          label="Password"
+          :label="dictionary.Password"
           lazy-rules
           outlined
           dense
@@ -59,12 +64,12 @@ const onSubmit = async () => {
           :rules="[requiredRule, minLengthRule(6)]"
         />
         <div class="flex items-center justify-between">
-          <q-btn unelevated type="submit" color="primary">Sign up</q-btn>
+          <q-btn unelevated type="submit" color="primary">{{ dictionary.Sign_up }}</q-btn>
           <a
             class="text-primary cursor-pointer"
             @click.prevent="router.push({ name: 'SignIn' })"
           >
-            Sign in
+            {{ dictionary.Sign_in }}
           </a>
         </div>
       </q-form>

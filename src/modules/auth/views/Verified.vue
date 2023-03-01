@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import authService from '../services'
 import notify from '@/plugins/notify'
 import { useQuasar } from 'quasar'
-import { useRouter } from 'vue-router'
+import { useLangStore } from '@/modules/lang/store'
+import { storeToRefs } from 'pinia'
 
 const $q = useQuasar()
+const langStore = useLangStore()
+const { dictionary } = storeToRefs(langStore)
 
 const route = useRoute()
 const router = useRouter()
@@ -29,6 +32,6 @@ const verified = async () => {
 <template>
   <div class="column flex-center">
     <h1 class="text-h4">Press button to verified you account</h1>
-    <q-btn unelevated color="primary" @click="verified">Verified</q-btn>
+    <q-btn unelevated color="primary" @click="verified">{{ dictionary.Confirm }}</q-btn>
   </div>
 </template>

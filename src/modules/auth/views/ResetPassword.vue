@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar'
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { requiredRule, emailRule, minLengthRule } from '@/rules'
 import authService from '../services'
 import notify from '@/plugins/notify'
 import { useRouter, useRoute } from 'vue-router'
+import { useLangStore } from '@/modules/lang/store'
+import { storeToRefs } from 'pinia'
 
 const router = useRouter()
 const route = useRoute()
@@ -12,6 +14,8 @@ const route = useRoute()
 const reset_token = route.query.reset_token as string
 
 const $q = useQuasar()
+const langStore = useLangStore()
+const { dictionary } = storeToRefs(langStore)
 
 const isRequestSend = ref(!!reset_token)
 
@@ -57,7 +61,7 @@ const resetPassword = async () => {
     <div class="col col-11 col-sm-8 col-md-6 col-lg-4 col-xl-3">
       <q-card bordered flat>
         <q-card-section>
-          <h1 class="text-h4 q-mt-none q-mb-xl">Reset password</h1>
+          <h1 class="text-h4 q-mt-none q-mb-xl">{{ dictionary.Reset_password }}</h1>
           <q-form
             v-if="!isRequestSend"
             class="q-gutter-sm"
@@ -65,13 +69,13 @@ const resetPassword = async () => {
           >
             <q-input
               v-model="email"
-              label="E-mail"
+              :label="dictionary.Email"
               lazy-rules
               outlined
               dense
               :rules="[requiredRule, emailRule]"
             />
-            <q-btn unelevated type="submit" color="primary">Send</q-btn>
+            <q-btn unelevated type="submit" color="primary">{{ dictionary.Send }}</q-btn>
           </q-form>
 
           <h2 v-else-if="isRequestSend && !reset_token" class="text-h6">A password reset confirmation email has been sent to your email</h2>
@@ -83,14 +87,14 @@ const resetPassword = async () => {
           >
             <q-input
               v-model="password"
-              label="Password"
+              :label="dictionary.Password"
               lazy-rules
               outlined
               dense
               type="password"
               :rules="[requiredRule, minLengthRule(6)]"
             />
-            <q-btn unelevated type="submit" color="primary">Reset</q-btn>
+            <q-btn unelevated type="submit" color="primary">{{ dictionary.Reset }}</q-btn>
           </q-form>
         </q-card-section>
       </q-card>
