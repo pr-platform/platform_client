@@ -104,6 +104,8 @@ onMounted(async () => {
     translations_lang_id: 1,
   })
 
+  selectedLang.value = currentLang.value
+
   fetchLangs()
 })
 
