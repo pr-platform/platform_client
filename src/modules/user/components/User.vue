@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, defineEmits, withDefaults, watch } from 'vue'
+import { defineProps, defineEmits, withDefaults } from 'vue'
 import { GetProfileResponse } from '../types'
 import { requiredRule, emailRule, minLengthRule } from '@/rules'
 import { useLangStore } from '@/modules/lang/store'

@@ -34,7 +34,10 @@ const setLang = async (lang) => {
   localStorage.setItem('lang', lang)
   currentLang.value = lang
 
-  langStore.dictionary = await getDictonary();
+  const dictionary = await getDictionary()
+
+  langStore.currentLang = dictionary.lang
+  langStore.dictionary = dictionary.dictionary
 }
 
 watch(profile, (profile) => {
@@ -45,7 +48,7 @@ watch(profile, (profile) => {
   }
 })
 
-const getDictonary = async () => {
+const getDictionary = async () => {
   try {
     return await langService.getDictionary({
       where: {
@@ -114,12 +117,10 @@ onMounted(async () => {
             @click="logout"
           />
         </div>
-
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" side="left" bordered>
-      <!-- drawer content -->
       <q-list bordered separator>
         <q-item clickable v-ripple :to="{ name: 'SendMail' }">
           <q-item-section>{{ dictionary.Mail }}</q-item-section>

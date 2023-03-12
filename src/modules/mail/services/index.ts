@@ -15,10 +15,6 @@ class MailService extends Service {
 
     const { data } = await this.axios.post<SendEmailResponse>('/mail/send-by-user', sendEmailArgs)
 
-    // if (data && !data.access_token) {
-    //   throw new Error('Error')
-    // }
-
     return data
   }
 }

@@ -5,6 +5,13 @@ import {
   GetOneLangArgs,
   GetOneLangResponse,
   Dictionary,
+  CreateLangArgs,
+  CreateLangResponse,
+  GetAllLexemesArgs,
+  CreateLexemeArgs,
+  CreateLexemeResponse,
+  CreateTranslationArgs,
+  CreateTranslationResponse,
 } from '../types'
 
 class LangService extends Service {
@@ -14,8 +21,20 @@ class LangService extends Service {
     profile: {},
   }
 
-  public async getLangs(): Promise<GetLangsResponse> {
-    const { data } = await this.axios.get<GetLangsResponse>('/langs')
+  public async getLangs(include_dictionary?: boolean): Promise<GetLangsResponse> {
+    const { data } = await this.axios.get<GetLangsResponse>('/langs', {
+      params: {
+        include_dictionary,
+      },
+    })
+
+    return data
+  }
+
+  public async getAllLexemes(getAllLexemesArgs?: GetAllLexemesArgs) {
+    const { data } = await this.axios.get<GetLangsResponse>('/langs/lexemes', {
+      params: getAllLexemesArgs,
+    })
 
     return data
   }
@@ -31,11 +50,36 @@ class LangService extends Service {
   public async getDictionary(getOneLangArgs: GetOneLangArgs) : Promise<Dictionary> {
     const lang = await this.getOneLang(getOneLangArgs)
 
-    const data = {}
+    const dictionary = {}
 
     lang.translations.forEach(translation => {
-      data[translation.lexeme.lexeme] = translation.translation
+      dictionary[translation.lexeme.lexeme] = translation.translation
     })
+
+    return {
+      lang: {
+        id: lang.id,
+        lexeme: lang.lexeme,
+        alias: lang.alias,
+      },
+      dictionary,
+    }
+  }
+
+  public async createLang(createLangArgs: CreateLangArgs): Promise<CreateLangResponse> {
+    const { data } = await this.axios.post<CreateLangResponse>('/langs', createLangArgs)
+
+    return data
+  }
+
+  public async createLexeme(createLexemeArgs: CreateLexemeArgs): Promise<CreateLexemeResponse> {
+    const { data } = await this.axios.post<CreateLexemeResponse>('/langs/lexeme', createLexemeArgs)
+
+    return data
+  }
+
+  public async createTranslation(createTranslationArgs: CreateTranslationArgs): Promise<CreateTranslationResponse> {
+    const { data } = await this.axios.post<CreateTranslationResponse>('/langs/translation', createTranslationArgs)
 
     return data
   }
