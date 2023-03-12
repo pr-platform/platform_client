@@ -5,9 +5,10 @@ import authRoutes from './modules/auth/routes'
 import userRoutes from './modules/user/routes'
 import mailRoutes from './modules/mail/routes'
 import langRoutes from './modules/lang/routes'
+import roleRoutes from './modules/role/routes'
 
-import { useUserStore } from '@/modules/user/store'
-import userService from '@/modules/user/services'
+import { useUserStore } from './modules/user/store'
+import userService from './modules/user/services'
 
 const routes = [
   {
@@ -24,6 +25,7 @@ const routes = [
   ...userRoutes,
   ...mailRoutes,
   ...langRoutes,
+  ...roleRoutes,
 ]
 
 const router = createRouter({

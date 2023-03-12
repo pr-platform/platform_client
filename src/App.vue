@@ -129,6 +129,10 @@ onMounted(async () => {
         <q-item clickable v-ripple :to="{ name: 'Langs' }">
           <q-item-section>{{ dictionary.Langs }}</q-item-section>
         </q-item>
+
+        <q-item clickable v-ripple :to="{ name: 'Roles' }">
+          <q-item-section>{{ dictionary.Roles }}</q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
