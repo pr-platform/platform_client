@@ -5,7 +5,7 @@ import notify from '@/plugins/notify'
 import { useQuasar } from 'quasar'
 import { useLangStore } from '@/modules/lang/store'
 import { storeToRefs } from 'pinia'
-import langService from '../services'
+import langService from '@/modules/lang/services'
 import { CreateLangArgs } from '../types'
 
 const $q = useQuasar()

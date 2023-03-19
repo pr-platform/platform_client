@@ -12,6 +12,8 @@ import {
   CreateLexemeResponse,
   CreateTranslationArgs,
   CreateTranslationResponse,
+  UpdateTranslationArgs,
+  UpdateTranslationResponse,
 } from '../types'
 
 class LangService extends Service {
@@ -80,6 +82,12 @@ class LangService extends Service {
 
   public async createTranslation(createTranslationArgs: CreateTranslationArgs): Promise<CreateTranslationResponse> {
     const { data } = await this.axios.post<CreateTranslationResponse>('/langs/translation', createTranslationArgs)
+
+    return data
+  }
+
+  public async updateTranslation(id: number, updateTranslationArgs: UpdateTranslationArgs): Promise<UpdateTranslationResponse> {
+    const { data } = await this.axios.put<UpdateTranslationResponse>(`/langs/translation/${id}`, updateTranslationArgs)
 
     return data
   }

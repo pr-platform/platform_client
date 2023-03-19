@@ -89,8 +89,15 @@ const saveTranslation = async (translation) => {
         lexemeId: translation.lexemeId,
       })
     } else {
-      // TODO: Update translation
+      await langService.updateTranslation(translation.id, {
+        translation: translation.translation,
+      })
     }
+
+    getAllLexemes({
+      include_translations: true,
+      translations_lang_id: selectedLang.value.id,
+    })
 
     notification.success({ message: 'Save success' })
   } catch (error) {

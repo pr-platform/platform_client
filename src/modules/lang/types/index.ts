@@ -72,4 +72,24 @@ export type CreateTranslationArgs = {
   lexemeId: number,
 }
 
-export type CreateTranslationResponse = {}
+export type CreateTranslationResponse = {
+  id: number,
+  translation: string,
+  langId: number,
+  lexemeId: number,
+  updatedAt: string,
+  createdAt: string,
+}
+
+export type UpdateTranslationArgs = {
+  translation: string,
+}
+
+export type UpdateTranslationResponse = {
+  id: number,
+  translation: string,
+  langId: number,
+  lexemeId: number,
+  updatedAt: string,
+  createdAt: string,
+}
