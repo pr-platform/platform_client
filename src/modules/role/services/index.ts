@@ -7,6 +7,8 @@ import {
   Permission,
   GetRoleArgs,
   GetRolesArgs,
+  SetPermissionsArgs,
+  UnsetPermissionsArgs,
 } from '../types'
 
 class RoleService extends Service {
@@ -40,6 +42,18 @@ class RoleService extends Service {
 
   public async getPermissions(): Promise<Permission[]> {
     const { data } = await this.axios.get<Permission[]>('/roles/permissions/find-all')
+
+    return data
+  }
+
+  public async setPermissions(setPermissionsArgs: SetPermissionsArgs) {
+    const { data } = await this.axios.put('/roles/permissions/set-permissions', setPermissionsArgs)
+
+    return data
+  }
+
+  public async unsetPermissions(unsetPermissionsArgs: UnsetPermissionsArgs) {
+    const { data } = await this.axios.put('/roles/permissions/unset-permissions', unsetPermissionsArgs)
 
     return data
   }

@@ -3,12 +3,15 @@ import { ref, onMounted, watch } from 'vue'
 import notify from '@/plugins/notify'
 import { useQuasar } from 'quasar'
 import { useLangStore } from '@/modules/lang/store'
+import { useUserStore } from '@/modules/user/store'
 import { storeToRefs } from 'pinia'
 import roleService from '../services'
-import { Permission, GetRoleResponse } from '../types'
+import { Permission, GetRoleResponse, MatchedPermission } from '../types'
 
 const $q = useQuasar()
 const langStore = useLangStore()
+const userStore = useUserStore()
+const { profile } = storeToRefs(userStore)
 const { dictionary } = storeToRefs(langStore)
 const { currentLang } = storeToRefs(langStore)
 const notification = notify($q)
@@ -35,21 +38,58 @@ const fetchRoles = async () => {
   }
 }
 
-const rolePermissions = ref([])
+const rolePermissions = ref<Permission[]>([])
 
-const getRole = async (id: number) => {
+const getRolePermissions = async (id: number) => {
   try {
     const role = await roleService.getRole(id, {
       include_permissions: true,
     })
+    selectedRole.value = role
     rolePermissions.value = role.permissions
   } catch (error) {
     notification.error({ message: error.message })
   }
 }
 
+const matchedPermissions = ref<MatchedPermission[]>([])
+
+const matchPermissions = () => {
+  matchedPermissions.value = permissions.value.map((permission) => {
+    return {
+      ...permission,
+      isCheck: !!rolePermissions.value.find(rolePermission => rolePermission.id === permission.id),
+    }
+  })
+}
+
 const changeRole = async (role: GetRoleResponse) => {
-  await getRole(role.id)
+  await getRolePermissions(role.id)
+  matchPermissions()
+}
+
+const selectedPermissions = ref<number[]>([])
+
+const unselectedPermissions = ref<number[]>([])
+
+const togglePermission = (permission: MatchedPermission) => {
+  const existPermission = rolePermissions.value.find(rolePermission => rolePermission.id === permission.id)
+
+  if (existPermission?.id) {
+    if (permission.isCheck) {
+      unselectedPermissions.value = selectedPermissions.value.filter(selectedPermission => selectedPermission !== permission.id)
+    } else {
+      unselectedPermissions.value.push(permission.id)
+      selectedPermissions.value = selectedPermissions.value.filter(selectedPermission => selectedPermission !== permission.id)
+    }
+  } else {
+    if (permission.isCheck) {
+      selectedPermissions.value.push(permission.id)
+      unselectedPermissions.value = selectedPermissions.value.filter(selectedPermission => selectedPermission !== permission.id)
+    } else {
+      selectedPermissions.value = selectedPermissions.value.filter(selectedPermission => selectedPermission !== permission.id)
+    }
+  }
 }
 
 const selectedRole = ref<GetRoleResponse>({
@@ -77,8 +117,30 @@ const columns = [
   },
 ]
 
+const savePermissions = async () => {
+  try {
+    if (selectedPermissions.value.length) {
+      await roleService.setPermissions({
+        roleId: selectedRole.value.id,
+        permissionIds: selectedPermissions.value,
+      })
+    }
+
+    if (unselectedPermissions.value.length) {
+      await roleService.unsetPermissions({
+        roleId: selectedRole.value.id,
+        permissionIds: unselectedPermissions.value,
+      })
+    }
+  } catch (error: any) {
+    notification.error({ message: error.message })
+  }
+}
+
 onMounted(async () => {
   await getAllPermissions()
+  await getRolePermissions(profile.value.roleId)
+  matchPermissions()
   await fetchRoles()
 })
 
@@ -93,13 +155,15 @@ defineExpose({
       <q-table
         :columns="columns"
         row-key="lexeme"
-        :rows="permissions"
+        :rows="matchedPermissions"
+        class="q-mb-md"
       >
         <template #header-cell-actions>
           <th>
             <q-select
               v-model="selectedRole"
               :options="roles"
+              option-value="id"
               :option-label="(val) => dictionary[val.lexeme] || val.name"
               :label="dictionary.Role"
               lazy-rules
@@ -118,13 +182,16 @@ defineExpose({
         <template #body-cell-actions="{ row }">
           <td>
             <q-checkbox
+              v-model="row.isCheck"
               outlined
               dense
               hide-bottom-space
+              @update:model-value="togglePermission(row)"
             />
           </td>
         </template>
       </q-table>
+      <q-btn unelevated type="submit" color="primary" @click="savePermissions">{{ dictionary.Save }}</q-btn>
     </q-card-section>
   </q-card>
 </template>

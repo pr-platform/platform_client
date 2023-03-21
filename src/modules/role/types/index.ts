@@ -9,7 +9,7 @@ export type CreateRoleResponse = {}
 export type Permission = {
   id: number,
   alias: string,
-  title: string,
+  name: string,
   lexeme: string,
   createdAt: string,
   updatedAt: string,
@@ -29,4 +29,18 @@ export type GetRoleArgs = {
 
 export type GetRolesArgs = {
   include_permissions?: boolean,
+}
+
+export type MatchedPermission = Pick<Permission, 'id' | 'alias' | 'name' | 'lexeme'> & {
+  isCheck: boolean,
+}
+
+export type SetPermissionsArgs = {
+  roleId: number,
+  permissionIds: number[],
+}
+
+export type UnsetPermissionsArgs = {
+  roleId: number,
+  permissionIds: number[],
 }
