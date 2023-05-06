@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import notify from '@/plugins/notify'
 import { useQuasar } from 'quasar'
 import { useLangStore } from '@/modules/lang/store'
@@ -7,6 +7,7 @@ import { useUserStore } from '@/modules/user/store'
 import { storeToRefs } from 'pinia'
 import roleService from '../services'
 import { Permission, GetRoleResponse, MatchedPermission } from '../types'
+import { can } from '../utils'
 
 const $q = useQuasar()
 const langStore = useLangStore()
@@ -15,6 +16,7 @@ const { profile } = storeToRefs(userStore)
 const { dictionary } = storeToRefs(langStore)
 const { currentLang } = storeToRefs(langStore)
 const notification = notify($q)
+const canFn = can()
 
 const permissions = ref<Permission[]>([])
 
@@ -100,22 +102,22 @@ const selectedRole = ref<GetRoleResponse>({
   permissions: [],
 })
 
-const columns = [
+const columns = computed(() => [
   {
     name: 'lexeme',
     required: true,
-    label: 'Name',
+    label: dictionary.value.Name,
     align: 'left',
     field: 'lexeme',
   },
   {
     name: 'actions',
     required: true,
-    label: '',
+    label: dictionary.value.Role,
     align: 'left',
     field: 'actions',
   },
-]
+])
 
 const savePermissions = async () => {
   try {
@@ -170,6 +172,7 @@ defineExpose({
               outlined
               dense
               hide-bottom-space
+              :disable="!canFn(['role:read_role'])"
               @update:model-value="changeRole"
             />
           </th>
@@ -186,6 +189,7 @@ defineExpose({
               outlined
               dense
               hide-bottom-space
+              :disable="!canFn(['role:change_permissions'])"
               @update:model-value="togglePermission(row)"
             />
           </td>

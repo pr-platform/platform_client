@@ -7,6 +7,7 @@ export default [
     component: SendMail,
     meta: {
       protected: true,
+      permissions: ['mail:send_email'],
     },
   },
 ]

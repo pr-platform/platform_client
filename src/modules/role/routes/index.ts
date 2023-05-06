@@ -7,6 +7,7 @@ export default [
     component: Roles,
     meta: {
       protected: true,
+      permissions: ['role:read_role'],
     },
   },
 ]

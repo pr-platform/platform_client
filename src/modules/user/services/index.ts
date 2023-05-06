@@ -1,6 +1,6 @@
 import Service from '@/services/Service'
 import { AxiosInstance } from 'axios'
-import { GetProfileResponse } from '../types'
+import { GetProfileResponse, GetProfileArgs } from '../types'
 
 class UserService extends Service {
   declare axios: AxiosInstance
@@ -9,16 +9,20 @@ class UserService extends Service {
     profile: {},
   }
 
-  public async fetchProfile(): Promise<GetProfileResponse> {
-    const { data } = await this.axios.get<GetProfileResponse>('/users/profile')
+  public async fetchProfile(getProfileArgs?: GetProfileArgs): Promise<GetProfileResponse> {
+    const { data } = await this.axios.get<GetProfileResponse>('/users/profile', {
+      params: {
+        ...getProfileArgs,
+      },
+    })
 
     this.cache.profile = data
 
     return data
   }
 
-  public async getProfile(): Promise<GetProfileResponse> {
-    return await this.fetchProfile()
+  public async getProfile(getProfileArgs?: GetProfileArgs): Promise<GetProfileResponse> {
+    return await this.fetchProfile(getProfileArgs)
   }
 }
 

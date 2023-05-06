@@ -6,7 +6,7 @@ import PermissionsTable from '../components/PermissionsTable.vue'
 <template>
   <div class="row">
     <div class="col col-12 q-mb-md">
-      <CreateRoleForm />
+      <CreateRoleForm class="q-mb-md" />
       <PermissionsTable />
     </div>
   </div>

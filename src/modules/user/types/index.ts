@@ -1,3 +1,5 @@
+import { GetRoleResponse } from '@/role/types'
+
 export type GetProfileResponse = {
   id: number,
   email: string,
@@ -8,4 +10,9 @@ export type GetProfileResponse = {
   roleId: number,
   createdAt?: string,
   updatedAt?: string,
+  role?: GetRoleResponse,
+}
+
+export type GetProfileArgs = {
+  include_permissions: boolean,
 }

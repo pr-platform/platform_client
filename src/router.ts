@@ -15,6 +15,9 @@ const routes = [
     name: 'Home',
     path: '/',
     component: Home,
+    meta: {
+      protected: true,
+    },
   },
   {
     name: 'Info',
@@ -33,19 +36,36 @@ const router = createRouter({
   routes,
 })
 
+const permissionGuard = (to, next) => {
+  const permissions = useUserStore().profile.role?.permissions?.map(permission => permission.alias)
+  const routePermissions = to.meta?.permissions
+
+  if (routePermissions) {
+    if (permissions.includes(...(routePermissions as string[]))) {
+      next()
+    } else {
+      next({ name: 'Home' })
+    }
+  } else {
+    next()
+  }
+}
+
 router.beforeEach(async (to, from, next) => {
   if (to.meta?.protected) {
     if (useUserStore().profile) {
-      next()
+      permissionGuard(to, next)
     } else {
       const access_token = localStorage.getItem('access_token')
 
       if (access_token) {
         try {
-          const profile = await userService.getProfile()
+          const profile = await userService.getProfile({
+            include_permissions: true,
+          })
 
           useUserStore().profile = profile
-          next()
+          permissionGuard(to, next)
         } catch (error) {
           next({ name: 'SignIn' })
         }

@@ -33,7 +33,9 @@ const onSubmit = async () => {
 
     localStorage.setItem('access_token', accessTokenResponse.access_token)
 
-    userStore.profile = await userService.getProfile()
+    userStore.profile = await userService.getProfile({
+      include_permissions: true,
+    })
 
     router.push({ name: 'Profile' })
 

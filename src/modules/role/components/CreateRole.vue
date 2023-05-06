@@ -7,12 +7,15 @@ import { useLangStore } from '@/modules/lang/store'
 import { storeToRefs } from 'pinia'
 import roleService from '../services'
 import { CreateRoleArgs } from '../types'
+import { can } from '../utils'
 
 const $q = useQuasar()
 const langStore = useLangStore()
 const { dictionary } = storeToRefs(langStore)
 const notification = notify($q)
 const emit = defineEmits(['role-created'])
+
+const canFn = can()
 
 const createRoleArgs = reactive<CreateRoleArgs>({
   alias: '',
@@ -34,7 +37,7 @@ const createRole = async () => {
 </script>
 
 <template>
-  <q-card bordered flat>
+  <q-card v-if="canFn(['role:create_role'])" bordered flat>
     <q-card-section>
       <q-form class="q-gutter-lg" @submit="createRole">
         <h3 class="text-h4">{{ dictionary.Create_role}}</h3>
