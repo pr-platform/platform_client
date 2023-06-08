@@ -6,6 +6,7 @@ import userRoutes from './modules/user/routes'
 import mailRoutes from './modules/mail/routes'
 import langRoutes from './modules/lang/routes'
 import roleRoutes from './modules/role/routes'
+import eventsRoutes from './modules/events/routes'
 
 import { useUserStore } from './modules/user/store'
 import userService from './modules/user/services'
@@ -29,6 +30,7 @@ const routes = [
   ...mailRoutes,
   ...langRoutes,
   ...roleRoutes,
+  ...eventsRoutes,
 ]
 
 const router = createRouter({
