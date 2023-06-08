@@ -9,13 +9,9 @@ onMounted(async () => {
   socket.on('connect', () => {
     console.log('Connected');
 
-    socket.emit('events', { test: 'test' });
-    socket.emit('identity', 0, response =>
-      console.log('Identity:', response),
-    );
-  });
-  socket.on('events', (data) => {
-    console.log('event', data);
+    socket.emit('test-event', { message: 'From client' }, res => {
+      console.log(res)
+    })
   });
   socket.on('exception', (data) => {
     console.log('event', data);
