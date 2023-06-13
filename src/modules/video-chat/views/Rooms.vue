@@ -34,10 +34,10 @@ const createRoom = () => {
 
 onMounted(async () => {
   socket.on('connect', () => {
-    console.log('Connected')
+    // console.log('Connected')
 
     socket.on(ACTIONS.SHARE_ROOMS, (data) => {
-      console.log(data.rooms)
+      // console.log(data.rooms)
       updateRooms(data.rooms)
     })
   })
