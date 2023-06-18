@@ -2,9 +2,13 @@
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import freeice from 'freeice'
-import geSsocket from '../socket'
 import { ACTIONS } from '../variables'
 import getSocket from '../socket'
+import { useLangStore } from '@/modules/lang/store'
+import { storeToRefs } from 'pinia'
+
+const langStore = useLangStore()
+const { dictionary } = storeToRefs(langStore)
 
 const socket = getSocket()
 
@@ -165,17 +169,26 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <h1 class="text-h4 q-mt-none">Room</h1>
+  <h1 class="text-h4 q-mt-none">{{ dictionary.Video_chat }}</h1>
 
-  {{ clients }}
-  <div v-for="client in clients" :key="client" style="width: 100%">
-    {{ client }}
-    <video
-      :ref="(node) => provideMediaRef(node, client)"
-      autoplay
-      style="width: 100%"
-      controls
-      :muted="client === 'LOCAL_VIDEO'"
-    />
+  <div class="row">
+    <div v-for="client in clients" :key="client" class="col-4">
+      <q-card class="q-ma-xs">
+        <q-card-section class="bg-primary text-white">
+          <div class="text-h6">{{ client }}</div>
+        </q-card-section>
+
+        <video
+          :ref="(node) => provideMediaRef(node, client)"
+          autoplay
+          style="width: 100%"
+          controls
+          :muted="client === 'LOCAL_VIDEO'"
+        />
+
+        <!-- <q-card-actions align="right">
+        </q-card-actions> -->
+      </q-card>
+    </div>
   </div>
 </template>

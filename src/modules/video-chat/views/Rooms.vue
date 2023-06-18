@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import { io, ManagerOptions } from 'socket.io-client'
 import { ref, onMounted, reactive, onBeforeUnmount } from 'vue'
 import { ACTIONS } from '../variables'
 import { v4 } from 'uuid'
 import { useRouter } from 'vue-router'
 import getSocket from '../socket'
+import { useLangStore } from '@/modules/lang/store'
+import { storeToRefs } from 'pinia'
+import { can } from '@/modules/role/utils'
 
 const router = useRouter()
 
+const langStore = useLangStore()
+const { dictionary } = storeToRefs(langStore)
+
 const socket = getSocket()
 
-const options: Partial<ManagerOptions> = {
-  forceNew: true,
-  timeout: 10000,
-  transports: ['websocket'],
-}
+const canFn = can()
 
 const rooms = ref([])
 
@@ -58,15 +59,38 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <h1 class="text-h4 q-mt-none">Rooms</h1>
-  <div>
-    <div v-for="room in rooms" :key="room.id">
-      <div>
-        <h3 class="text-h6 q-mt-none">{{ room }}</h3>
-        <button @click="join(room)">Join</button>
-      </div>
-    </div>
+  <div class="q-mb-xl">
+    <h1 class="text-h4 q-mt-none">{{ dictionary.Video_chat }}</h1>
+    <q-btn
+      v-if="canFn(['video-chat:create_room'])"
+      unelevated
+      color="primary"
+      @click="createRoom"
+    >
+      {{ dictionary.Create_room }}
+    </q-btn>
   </div>
 
-  <button @click="createRoom">Create room</button>
+  <div v-if="canFn(['video-chat:get_room'])" class="row">
+    <div v-for="room in rooms" :key="room.id" class="col-4">
+      <q-card class="q-ma-xs">
+        <q-card-section class="bg-primary text-white">
+          <div class="text-h6">{{ room }}</div>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-actions align="right">
+          <q-btn
+            v-if="canFn(['video-chat:create_room'])"
+            unelevated
+            color="primary"
+            @click="join(room)"
+          >
+            {{ dictionary.Join_room }}
+          </q-btn>
+        </q-card-actions>
+      </q-card>
+    </div>
+  </div>
 </template>
