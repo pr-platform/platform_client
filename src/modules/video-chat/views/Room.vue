@@ -2,8 +2,11 @@
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import freeice from 'freeice'
-import socket from '../socket'
+import geSsocket from '../socket'
 import { ACTIONS } from '../variables'
+import getSocket from '../socket'
+
+const socket = getSocket()
 
 const LOCAL_VIDEO = 'LOCAL_VIDEO'
 
@@ -163,6 +166,7 @@ onBeforeUnmount(() => {
 
 <template>
   <h1 class="text-h4 q-mt-none">Room</h1>
+
   {{ clients }}
   <div v-for="client in clients" :key="client" style="width: 100%">
     {{ client }}

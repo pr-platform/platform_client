@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { GetProfileResponse } from '../types'
 
 interface State {
 }

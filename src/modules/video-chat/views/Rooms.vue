@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { io, ManagerOptions } from 'socket.io-client'
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted, reactive, onBeforeUnmount } from 'vue'
 import { ACTIONS } from '../variables'
 import { v4 } from 'uuid'
 import { useRouter } from 'vue-router'
-import socket from '../socket'
+import getSocket from '../socket'
 
 const router = useRouter()
+
+const socket = getSocket()
 
 const options: Partial<ManagerOptions> = {
   forceNew: true,
@@ -16,8 +18,8 @@ const options: Partial<ManagerOptions> = {
 
 const rooms = ref([])
 
-const updateRooms = (allRooms) => {
-  rooms.value = allRooms
+const updateRooms = (data) => {
+  rooms.value = data.rooms
 }
 
 const join = (roomId) => {
@@ -32,23 +34,26 @@ const createRoom = () => {
   }})
 }
 
+const exeptionSocket = (data) => {
+  console.log(data)
+}
+
+const connect = () => {}
+
 onMounted(async () => {
-  socket.on('connect', () => {
-    // console.log('Connected')
+  socket.emit(ACTIONS.SHARE_ROOMS, updateRooms)
 
-    socket.on(ACTIONS.SHARE_ROOMS, (data) => {
-      // console.log(data.rooms)
-      updateRooms(data.rooms)
-    })
-  })
+  socket.on(ACTIONS.SHARE_ROOMS, updateRooms)
 
-  socket.on('exception', (data) => {
-    console.log('event', data)
-  })
+  socket.on('exception', exeptionSocket)
 
   socket.on('disconnect', () => {
     console.log('Disconnected')
   })
+})
+
+onBeforeUnmount(() => {
+  socket.off(ACTIONS.SHARE_ROOMS, updateRooms)
 })
 </script>
 
