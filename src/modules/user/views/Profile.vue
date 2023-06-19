@@ -8,8 +8,8 @@ import { GetProfileResponse } from '../types'
 const profile = ref<GetProfileResponse>({
   id: null,
   email: '',
-  firstName: null,
-  lastName: null,
+  firstname: null,
+  lastname: null,
   verified: false,
   blocked: true,
   roleId: null,

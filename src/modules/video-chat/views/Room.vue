@@ -19,6 +19,8 @@ const route = useRoute()
 
 const roomId = route.params.id
 
+const connectedPeers = ref([])
+
 const peerConnections = {}
 let localMediaStream = null
 const peerMediaElements = ref({
@@ -28,7 +30,6 @@ const peerMediaElements = ref({
 const clients = ref([])
 
 const addNewClient = async (newClient) => {
-  console.log('addNewClient', newClient)
   if (!clients.value.includes(newClient)) {
     clients.value.push(newClient)
   }
@@ -45,11 +46,11 @@ const startCapture = async () => {
     },
   })
 
-  await addNewClient(LOCAL_VIDEO)
+  await addNewClient({
+    peerId: LOCAL_VIDEO,
+  })
 
   const elem = peerMediaElements.value[LOCAL_VIDEO]
-
-  console.log(localMediaStream)
 
   if (elem) {
     elem.volume = 0
@@ -58,11 +59,10 @@ const startCapture = async () => {
 }
 
 const provideMediaRef = (elem, client) => {
-  console.log('provideMediaRef', client)
   peerMediaElements.value[client] = elem;
 }
 
-const handleNewPeer = async ({ peerId, createOffer }) => {
+const handleNewPeer = async ({ peerId, createOffer, user }) => {
   if (peerId in peerConnections) {
     return console.warn(`Already conected to peer ${peerId}`)
   }
@@ -71,9 +71,7 @@ const handleNewPeer = async ({ peerId, createOffer }) => {
     iceServers: freeice(),
   })
 
-
   peerConnections[peerId].onicecandidate = event => {
-    console.log('onicecandidate')
     if (event.candidate) {
       socket.emit(ACTIONS.RELAY_ICE, {
         peerId,
@@ -84,11 +82,13 @@ const handleNewPeer = async ({ peerId, createOffer }) => {
 
   let trackNumbers = 0
   peerConnections[peerId].ontrack = async ({ streams: [remoteStream] }) => {
-    console.log('ontrack', remoteStream)
     trackNumbers++
 
     if (trackNumbers === 2) {
-      await addNewClient(peerId)
+      await addNewClient({
+        peerId,
+        user,
+      })
 
       const elem = peerMediaElements.value[peerId]
 
@@ -100,12 +100,10 @@ const handleNewPeer = async ({ peerId, createOffer }) => {
   }
 
   localMediaStream.getTracks().forEach(track => {
-    console.log('addTrack', track)
     peerConnections[peerId].addTrack(track, localMediaStream)
   })
 
   if (createOffer) {
-    console.log('createOffer')
     const offer = await peerConnections[peerId].createOffer()
 
     await peerConnections[peerId].setLocalDescription(offer)
@@ -118,11 +116,9 @@ const handleNewPeer = async ({ peerId, createOffer }) => {
 }
 
 const setRemoteMedia = async ({ peerId, sessionDescription }) => {
-  console.log('setRemoteMedia', peerId)
   await peerConnections[peerId].setRemoteDescription(new RTCSessionDescription(sessionDescription))
 
   if (sessionDescription.type === 'offer') {
-    console.log('offer')
     const answer = await peerConnections[peerId].createAnswer()
 
     await peerConnections[peerId].setLocalDescription(answer)
@@ -132,6 +128,12 @@ const setRemoteMedia = async ({ peerId, sessionDescription }) => {
       sessionDescription: answer,
     })
   }
+}
+
+const getUserFromPeer = (client) => {
+  if (client.peerId === LOCAL_VIDEO) return 'I am'
+
+  return `${client.user?.lastname ?? ''} ${client.user?.firstname ?? ''}`.trim() || 'No name'
 }
 
 onMounted(async () => {
@@ -175,7 +177,7 @@ onBeforeUnmount(() => {
     <div v-for="client in clients" :key="client" class="col-4">
       <q-card class="q-ma-xs">
         <q-card-section class="bg-primary text-white">
-          <div class="text-h6">{{ client }}</div>
+          <div class="text-h6">{{ getUserFromPeer(client) }}</div>
         </q-card-section>
 
         <video

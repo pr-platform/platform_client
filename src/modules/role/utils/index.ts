@@ -6,7 +6,7 @@ export const can = () => {
   const { profile } = storeToRefs(userStore)
   const permissions = profile.value?.role?.permissions?.map(permission => permission.alias)
 
-  console.log(permissions)
+  // console.log(permissions)
 
   return (canPermissions: string[]) => permissions.includes(...canPermissions)
 }
