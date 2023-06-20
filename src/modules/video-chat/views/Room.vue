@@ -157,7 +157,7 @@ onMounted(async () => {
 
       delete peerConnections[peerId]
 
-      clients.value = clients.value.filter(c => c !== peerId)
+      clients.value = clients.value.filter(c => c.peerId !== peerId)
     })
   } catch (error) {
     console.error(error.message)
@@ -176,7 +176,14 @@ onBeforeUnmount(() => {
   <div class="row">
     <div v-for="client in clients" :key="client" class="col-4">
       <q-card class="q-ma-xs">
-        <q-card-section class="bg-primary text-white">
+        <q-card-section
+          class="text-white"
+          :class="{
+            'bg-red': client.user?.isCreator && client.peerId !== 'LOCAL_VIDEO',
+            'bg-primary': !client.user?.isCreator,
+            'bg-teal': client.peerId === 'LOCAL_VIDEO',
+          }"
+        >
           <div class="text-h6">{{ getUserFromPeer(client) }}</div>
         </q-card-section>
 
