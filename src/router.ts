@@ -41,8 +41,6 @@ const router = createRouter({
 })
 
 const permissionGuard = (to, next) => {
-  next()
-  return
   const permissions = useUserStore().profile.role?.permissions?.map(permission => permission.alias)
   const routePermissions = to.meta?.permissions
 
@@ -61,6 +59,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.meta?.protected) {
     if (useUserStore().profile) {
       permissionGuard(to, next)
+      return
     } else {
       const access_token = localStorage.getItem('access_token')
 
@@ -72,8 +71,10 @@ router.beforeEach(async (to, from, next) => {
 
           useUserStore().profile = profile
           permissionGuard(to, next)
+          return
         } catch (error) {
           next({ name: 'SignIn' })
+          return
         }
       }
 
