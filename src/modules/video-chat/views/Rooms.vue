@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, reactive, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { ACTIONS } from '../variables'
 import { v4 } from 'uuid'
 import { useRouter } from 'vue-router'

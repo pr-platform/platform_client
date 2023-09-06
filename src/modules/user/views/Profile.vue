@@ -17,6 +17,10 @@ const profile = ref<GetProfileResponse>({
   updatedAt: '',
 })
 
+const saveProfile = (event) => {
+  console.log('Save profile', event)
+}
+
 const save = (user) => {
   console.log(user.firstname)
 }
@@ -28,5 +32,5 @@ onMounted(async () => {
 
 <template>
   <h1 class="text-h4 q-mt-none">Profile</h1>
-  <User :user="profile" @save="save" />
+  <User :user="profile" @save="save" @save-profile="saveProfile" />
 </template>

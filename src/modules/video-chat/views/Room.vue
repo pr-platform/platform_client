@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import freeice from 'freeice'
 import { ACTIONS } from '../variables'
 import getSocket from '../socket'
@@ -14,12 +14,9 @@ const socket = getSocket()
 
 const LOCAL_VIDEO = 'LOCAL_VIDEO'
 
-const router = useRouter()
 const route = useRoute()
 
 const roomId = route.params.id
-
-const connectedPeers = ref([])
 
 const peerConnections = {}
 let localMediaStream = null
@@ -59,7 +56,7 @@ const startCapture = async () => {
 }
 
 const provideMediaRef = (elem, client) => {
-  peerMediaElements.value[client] = elem;
+  peerMediaElements.value[client.peerId] = elem;
 }
 
 const handleNewPeer = async ({ peerId, createOffer, user }) => {
@@ -146,7 +143,6 @@ onMounted(async () => {
     socket.on(ACTIONS.SESSION_DESCRIPTION, setRemoteMedia)
 
     socket.on(ACTIONS.ICE_CANDIDATE, ({ peerId, iceCandidate}) => {
-      console.log(ACTIONS.ICE_CANDIDATE)
       peerConnections[peerId].addIceCandidate(new RTCIceCandidate(iceCandidate))
     })
 
