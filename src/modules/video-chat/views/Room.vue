@@ -187,12 +187,8 @@ onBeforeUnmount(() => {
           :ref="(node) => provideMediaRef(node, client)"
           autoplay
           style="width: 100%"
-          controls
           :muted="client === 'LOCAL_VIDEO'"
         />
-
-        <!-- <q-card-actions align="right">
-        </q-card-actions> -->
       </q-card>
     </div>
   </div>
