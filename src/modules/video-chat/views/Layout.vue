@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { ACTIONS } from '../variables'
 import getSocket from '../socket'
 
 const exeptionSocket = (data) => {
@@ -16,6 +15,7 @@ const socket = getSocket({
 const isConnect = ref(false)
 
 onMounted(async () => {
+  isConnect.value = socket.connected
   socket.on('exception', exeptionSocket)
 
   socket.on('disconnect', () => {
